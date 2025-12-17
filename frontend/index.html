@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mismatched Realities Mint</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Mismatched Realities</h1>
+    <img src="https://gateway.pinata.cloud/ipfs/bafybeih6nlxuijq2v3olyodom55wuv5zss5w3cvnvlr6n2kltnempsoml4/hidden.png" alt="Unrevealed">
+    <div id="status">Connect wallet to start</div>
+    <button id="connect">Connect Wallet</button>
+    <div id="mint-area" class="hidden">
+      <input type="number" id="quantity" value="1" min="1" max="1">
+      <input type="text" id="proof" placeholder='Paste proof: ["0x...", "0x..."]'>
+      <button id="mint-btn">Mint Free</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.min.js";
+
+    const CONTRACT_ADDRESS = "0x69243Fdc5a876cd0cfb3f133671Bbe6097ABB1B3";
+    const ABI = [
+      "function whitelistMint(uint256 quantity, bytes32[] calldata proof)",
+      "function whitelistSaleActive() view returns (bool)"
+    ];
+
+    let provider, signer, contract;
+
+    document.getElementById("connect").onclick = async () => {
+      if (!window.ethereum) {
+        document.getElementById("status").textContent = "Install MetaMask!";
+        return;
+      }
+
+      provider = new ethers.BrowserProvider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = await provider.getSigner();
+      const address = await signer.getAddress();
+
+      const network = await provider.getNetwork();
+      if (network.chainId !== 84532n) {
+        document.getElementById("status").textContent = "Switch to Base Sepolia!";
+        return;
+      }
+
+      contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+      document.getElementById("status").textContent = `Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
+      document.getElementById("mint-area").classList.remove("hidden");
+    };
+
+    document.getElementById("mint-btn").onclick = async () => {
+      const quantity = BigInt(document.getElementById("quantity").value);
+      let proof;
+      try {
+        proof = JSON.parse(document.getElementById("proof").value);
+      } catch {
+        document.getElementById("status").textContent = "Invalid proof!";
+        return;
+      }
+
+      try {
+        document.getElementById("status").textContent = "Minting...";
+        const tx = await contract.whitelistMint(quantity, proof);
+        await tx.wait();
+        document.getElementById("status").textContent = "Minted! Check MetaMask NFTs";
+      } catch (err) {
+        document.getElementById("status").textContent = "Error: " + (err.reason || err.message);
+      }
+    };
+  </script>
+</body>
+</html>

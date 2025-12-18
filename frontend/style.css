@@ -118,6 +118,7 @@ input[type="number"] {
   justify-content: center;
   gap: 1rem;
   align-items: center;
+  width: fit-content;
 }
 
 footer {
@@ -191,4 +192,10 @@ footer {
 
 .hidden { 
   display: none; 
+}
+
+@media screen and (max-width: 370px){
+  button{
+    margin: 0 2rem;
+  }
 }

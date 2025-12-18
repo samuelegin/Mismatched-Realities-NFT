@@ -1,53 +1,186 @@
-body{ 
-  background: #0f051d; 
-  color: #fff; 
-  font-family: Arial; 
-  text-align: center; 
-  padding: 20px; 
-}
-.container{ 
-  max-width: 400px; 
-  margin: auto; 
+body{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f1a;
+  color: #eee;
+  overflow-x: hidden;
 }
 
-h1{ 
-  color: #9d7aff; 
+.container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 10;
 }
 
-img{ 
-  width: 250px; 
-  border-radius: 15px; 
-  margin: 20px 0; 
+header p.accent-text {
+  color: #ffb347;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  margin: 1rem 0;
 }
 
-button{ 
-  background: #6e4aff; 
-  color: white; 
-  border: none; 
-  padding: 10px 20px; 
-  font-size: 16px; 
-  border-radius: 5px; 
-  cursor: pointer; 
+header h1 {
+  font-size: 3rem;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 10px #ffb347, 0 0 20px #ff7f50;
+  font-family: 'Times New Roman', Times, serif;
 }
 
-button:hover{ 
-  background: #a855f7; 
+header p.description {
+  max-width: 600px;
+  margin: 1rem auto;
+  font-size: 1.1rem;
+  color: #aaa;
 }
 
-input{ 
-  width: 100%; 
-  padding: 10px; 
-  margin: 10px 0; 
-  border-radius: 5px; 
-  border: 1px solid #6e4aff; 
-  background: #1a0b2e; 
-  color: white; 
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-.hidden{ 
+.nft-card {
+  height: 25rem;
+  position: relative;
+  width: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.nft-card img {
+  width: 100%;
+  display: block;
+}
+
+.nft-card .nft-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(15,15,26,0.9), transparent);
+  padding: 1rem;
+}
+
+.nft-card .collection-text {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: #ffb347;
+}
+
+.nft-card h3 {
+  margin: 0.3rem 0 0 0;
+}
+
+.mint-section {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+
+button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ff7f50;
+  color: #000;
+  font-weight: bold;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input[type="number"] {
+  padding: 0.6rem;
+  width: 60px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #111;
+  color: #fff;
+}
+
+#contract-info {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  border-top: 1px solid #333;
+  margin-top: 3rem;
+  color: #777;
+}
+
+.glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-top { 
+  top: 20%; 
+  left: 20%; 
+  background: rgba(255,180,71,0.2); 
+}
+
+.glow-bottom { 
+  bottom: 20%; 
+  right: 20%; 
+  background: rgba(255,127,80,0.2); 
+}
+
+#sparkles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sparkle {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffb347;
+  opacity: 0.6;
+  animation: sparkleAnim linear infinite;
+}
+
+@keyframes sparkleAnim {
+  0% { 
+    transform: translateY(0) scale(0.5); 
+    opacity: 0.6; 
+  }
+
+  50% {
+    opacity: 1; 
+  }
+
+  100% { 
+    transform: translateY(-100vh) scale(0); 
+    opacity: 0; 
+  }
+}
+
+.hidden { 
   display: none; 
-}
-
-#status { 
-  margin: 20px 0; 
 }

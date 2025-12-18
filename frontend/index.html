@@ -4,125 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mismatched Realities Mint</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Mismatched Realities</h1>
+  <div id="sparkles"></div>
+  <div class="glow glow-top"></div>
+  <div class="glow glow-bottom"></div>
 
-    <img
-      src="https://gateway.pinata.cloud/ipfs/bafybeih6nlxuijq2v3olyodom55wuv5zss5w3cvnvlr6n2kltnempsoml4/hidden.png"
-      width="300"
-    />
+  <main class="container">
+    <header>
+      <p class="accent-text">Now Minting on Base</p>
+      <h1>Mismatched Realities</h1>
+      <p class="description">
+        Enter a realm where mystery unfolds. Each NFT reveals a unique journey through enchanted dimensions.
+      </p>
+    </header>
 
-    <div id="status">Connect wallet to start</div>
+    <div class="main-content">
+      <div class="nft-card">
+        <div class="nft-glow"></div>
+        <img id="nft-image" src="https://gateway.pinata.cloud/ipfs/bafybeih6nlxuijq2v3olyodom55wuv5zss5w3cvnvlr6n2kltnempsoml4/hidden.png" alt="NFT" />
+        <div class="nft-footer">
+          <p class="collection-text">Collection</p>
+          <h3>Mismatched Realities</h3>
+        </div>
+      </div>
 
-    <button id="connect">Connect Wallet</button>
+      <div class="mint-section">
+        <div id="status">Connect wallet to start</div>
+        <button id="connect-btn">Connect Wallet</button>
 
-    <button id="mint-btn" class="hidden" disabled>
-      Mint Free
-    </button>
-  </div>
+        <div id="whitelist-mint" class="hidden">
+          <button id="mint-wl-btn">Mint Free (Whitelist)</button>
+        </div>
 
-  <script type="module">
-    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.min.js";
+        <div id="public-mint" class="hidden">
+          <input type="number" id="public-qty" value="1" min="1" max="10" />
+          <button id="mint-public-btn">Mint Public</button>
+          <div id="public-price"></div>
+        </div>
 
-    const CONTRACT_ADDRESS = "0x69243Fdc5a876cd0cfb3f133671Bbe6097ABB1B3";
-    const CHAIN_ID = 84532n;
+        <div id="contract-info">
+          <span>Contract: <code id="contract-address"></code></span>
+          <button id="copy-btn">Copy</button>
+          <a id="explorer-link" target="_blank">View on BaseScan</a>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    const ABI = [
-      "function whitelistMint(uint256 quantity, bytes32[] calldata proof)",
-      "function whitelistSaleActive() view returns (bool)"
-    ];
+  <footer>
+    <p>© 2025 Mismatched Realities. All rights reserved.</p>
+  </footer>
 
-    let provider;
-    let signer;
-    let contract;
-    let userProof = null;
-    let proofsCache = null;
-
-    const getInjectedProvider = () => {
-      if (window.ethereum) return window.ethereum;
-      if (window.phantom?.ethereum) return window.phantom.ethereum;
-      return null;
-    };
-
-    async function loadProofs() {
-      if (proofsCache) return proofsCache;
-      const res = await fetch("./proofs.json");
-      proofsCache = await res.json();
-      return proofsCache;
-    }
-
-    document.getElementById("connect").onclick = async () => {
-      try {
-        const injected = getInjectedProvider();
-        if (!injected) {
-          document.getElementById("status").textContent =
-            "Install MetaMask or Phantom";
-          return;
-        }
-
-        await injected.request({ method: "eth_requestAccounts" });
-
-        provider = new ethers.BrowserProvider(injected);
-        signer = await provider.getSigner();
-        const address = await signer.getAddress();
-
-        const network = await provider.getNetwork();
-        if (network.chainId !== CHAIN_ID) {
-          document.getElementById("status").textContent =
-            "Switch to Base Sepolia";
-          return;
-        }
-
-        contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
-        const saleActive = await contract.whitelistSaleActive();
-        if (!saleActive) {
-          document.getElementById("status").textContent =
-            "Whitelist sale inactive";
-          return;
-        }
-
-        const proofs = await loadProofs();
-        userProof = proofs[address];
-
-        if (!userProof) {
-          document.getElementById("status").textContent =
-            "Wallet not whitelisted";
-          return;
-        }
-
-        document.getElementById(
-          "status"
-        ).textContent = `Whitelisted: ${address.slice(0,6)}...${address.slice(-4)}`;
-
-        document.getElementById("connect").classList.add("hidden");
-        document.getElementById("mint-btn").classList.remove("hidden");
-        document.getElementById("mint-btn").disabled = false;
-      } catch (err) {
-        document.getElementById("status").textContent =
-          "Wallet connection failed";
-      }
-    };
-
-    document.getElementById("mint-btn").onclick = async () => {
-      if (!userProof) return;
-
-      try {
-        document.getElementById("status").textContent = "Minting...";
-
-        const tx = await contract.whitelistMint(1n, userProof);
-        await tx.wait();
-
-        document.getElementById("status").textContent =
-          "Mint successful";
-      } catch (err) {
-        document.getElementById("status").textContent =
-          err.reason || err.message || "Mint failed";
-      }
-    };
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.min.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>

@@ -118,7 +118,11 @@
       const wlActive = await contract.whitelistSaleActive();
       const publicActive = await contract.publicSaleActive();
       const proofData = await loadProofs();
-      userProof = proofData[address.toLowerCase()]; // addresses in proofs.json are usually lowercase
+      const normalized = ethers.getAddress(address);
+      userProof = proofData[normalized];
+      
+
+
 
       if (wlActive && userProof) document.getElementById("whitelist-mint").classList.remove("hidden");
       if (publicActive) document.getElementById("public-mint").classList.remove("hidden");

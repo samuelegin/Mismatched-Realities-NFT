@@ -30,6 +30,10 @@
       </div>
 
       <div class="mint-section">
+        <div id="mint-stats">
+          Minted: <span id="minted-count">Loading...</span> / 8,888
+        </div>
+
         <div id="status">Connect wallet to start</div>
         <button id="connect-btn">Connect Wallet</button>
 
@@ -87,6 +91,15 @@
       document.getElementById("public-price").textContent = `Price per NFT: ${ethers.formatEther(publicPrice)} ETH`;
     }
 
+    async function loadMintStats() {
+      try {
+        const total = await contract.totalSupply();
+        document.getElementById("minted-count").textContent = total.toString();
+      } catch (e) {
+        document.getElementById("minted-count").textContent = "Error";
+      }
+    }
+
     function getInjectedProvider() {
       if (window.ethereum) return window.ethereum;
       if (window.phantom?.ethereum) return window.phantom.ethereum;
@@ -106,6 +119,7 @@
       if (network.chainId !== CHAIN_ID) return alert("Switch to Base Sepolia");
 
       contract = new ethers.Contract(CONTRACT_ADDRESS, [
+        "function totalSupply() view returns (uint256)",
         "function whitelistMint(uint256, bytes32[])",
         "function whitelistSaleActive() view returns (bool)",
         "function publicMint(uint256) payable",
@@ -114,15 +128,13 @@
       ], signer);
 
       await loadPublicPrice();
+      await loadMintStats();
 
       const wlActive = await contract.whitelistSaleActive();
       const publicActive = await contract.publicSaleActive();
       const proofData = await loadProofs();
       const normalized = ethers.getAddress(address);
-      userProof = proofData[normalized];
-      
-
-
+      userProof = proofData[normalized.toLowerCase()];
 
       if (wlActive && userProof) document.getElementById("whitelist-mint").classList.remove("hidden");
       if (publicActive) document.getElementById("public-mint").classList.remove("hidden");
@@ -139,6 +151,7 @@
         const tx = await contract.whitelistMint(1n, userProof);
         await tx.wait();
         document.getElementById("status").textContent = "Whitelist mint successful!";
+        await loadMintStats();
       } catch(e) {
         document.getElementById("status").textContent = e.reason || e.message || "Transaction failed";
       }
@@ -152,6 +165,7 @@
         const tx = await contract.publicMint(qty, { value: publicPrice * qty });
         await tx.wait();
         document.getElementById("status").textContent = "Public mint successful!";
+        await loadMintStats();
       } catch(e) {
         document.getElementById("status").textContent = e.reason || e.message || "Transaction failed";
       }

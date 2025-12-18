@@ -150,14 +150,14 @@ footer {
   background: rgba(255,127,80,0.2); 
 }
 
-#sparkles {
+#sparkles{
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
 }
 
-.sparkle {
+.sparkle{
   position: absolute;
   border-radius: 50%;
   background: #ffb347;
@@ -167,6 +167,10 @@ footer {
 
 #copy-btn{
   padding: 0.5rem;
+}
+
+#explorer-link{
+  color: #fff;
 }
 
 @keyframes sparkleAnim {

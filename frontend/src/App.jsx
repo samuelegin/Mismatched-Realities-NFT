@@ -17,7 +17,11 @@ function App() {
   const [userProof, setUserProof] = useState(null)
   const [wlActive, setWlActive] = useState(false)
   const [publicActive, setPublicActive] = useState(false)
-
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 3000);
+  };
   const CONTRACT_ADDRESS = "0x69243Fdc5a876cd0cfb3f133671Bbe6097ABB1B3"
   const CHAIN_ID = 84532
 
@@ -64,10 +68,11 @@ function App() {
     const qty = BigInt(document.getElementById("public-qty").value)
     try {
       const tx = await contract.publicMint(qty, { value: publicPrice * qty })
-      await tx.wait()
-      alert("Public mint successful!")
+      await tx.wait();
+      showToast("Public mint successful!");
+
     } catch (e) {
-      alert(e?.reason || e?.message || "Mint failed")
+      showToast(e?.reason || e?.message || "Mint failed", "error");
     }
   }
 
@@ -75,10 +80,11 @@ function App() {
     if (!contract || !userProof) return alert("Not whitelisted!")
     try {
       const tx = await contract.whitelistMint(1n, userProof)
-      await tx.wait()
-      alert("Whitelist mint successful!")
+      await tx.wait();
+      showToast("Whitelist mint successful!");
+
     } catch (e) {
-      alert(e?.reason || e?.message || "Mint failed")
+      showToast(e?.reason || e?.message || "Mint failed", "error");
     }
   }
 
@@ -157,6 +163,11 @@ function App() {
           </div>
         </div>
       </div>
+      {toast.show && (
+        <div className={`toast ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   )
 }

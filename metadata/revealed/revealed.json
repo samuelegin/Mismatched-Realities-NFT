@@ -1,0 +1,8 @@
+{
+  "name": "Mismatched Realities",
+  "description": "A revealed fragment of reality.",
+  "image": "ipfs:///revealed.png",
+  "attributes": [
+    { "trait_type": "Reality", "value": "Test" }
+  ]
+}
